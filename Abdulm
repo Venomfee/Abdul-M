@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator HPP French Fries</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #e67e22; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        button { background: #27ae60; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-size: 16px; width: 100%; margin-top: 10px; }
+        button:hover { background: #219653; }
+        .result { margin-top: 20px; padding: 15px; background: #e8f8f5; border: 1px solid #a3e4d7; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Kalkulator HPP French Fries</h2>
+    
+    <div class="form-group">
+        <label>Nama Produk:</label>
+        <input type="text" id="namaProduk" placeholder="Contoh: French Fries Regular">
+    </div>
+    
+    <div class="form-group">
+        <label>Modal Bahan Baku per Batch (Rp):</label>
+        <input type="number" id="modalBahan" placeholder="Contoh: 50000">
+    </div>
+
+    <div class="form-group">
+        <label>Jumlah Hasil Jadi (Porsi):</label>
+        <input type="number" id="jumlahPorsi" placeholder="Contoh: 10">
+    </div>
+
+    <div class="form-group">
+        <label>Keuntungan yang Diinginkan (%):</label>
+        <input type="number" id="persenUntung" placeholder="Contoh: 50">
+    </div>
+
+    <button onclick="hitungDanSimpan()">Hitung & Simpan Data</button>
+
+    <div class="result" id="hasil" style="display:none;">
+        <h3>Hasil Perhitungan:</h3>
+        <p id="teksHpp"></p>
+        <p id="teksJual"></p>
+    </div>
+</div>
+
+<script>
+    function hitungDanSimpan() {
+        const nama = document.getElementById('namaProduk').value;
+        const modal = parseFloat(document.getElementById('modalBahan').value) || 0;
+        const porsi = parseFloat(document.getElementById('jumlahPorsi').value) || 0;
+        const untung = parseFloat(document.getElementById('persenUntung').value) || 0;
+
+        if (porsi <= 0) {
+            alert('Jumlah porsi harus lebih dari 0!');
+            return;
+        }
+
+        const hppPerPorsi = modal / porsi;
+        const hargaJual = hppPerPorsi + (hppPerPorsi * (untung / 100));
+
+        // Tampilkan hasil
+        document.getElementById('hasil').style.display = 'block';
+        document.getElementById('teksHpp').innerHTML = '<b>HPP per Porsi:</b> Rp ' + hppPerPorsi.toLocaleString('id-ID');
+        document.getElementById('teksJual').innerHTML = '<b>Rekomendasi Harga Jual:</b> Rp ' + hargaJual.toLocaleString('id-ID');
+
+        // Simpan ke localStorage HP / Browser
+        const dataHPP = { nama, modal, porsi, untung, hppPerPorsi, hargaJual };
+        localStorage.setItem('savedHPP', JSON.stringify(dataHPP));
+        alert('Data berhasil disimpan ke memori browser!');
+    }
+
+    // Ambil data otomatis jika sebelumnya pernah disimpan
+    window.onload = function() {
+        const saved = localStorage.getItem('savedHPP');
+        if (saved) {
+            const data = JSON.parse(saved);
+            document.getElementById('namaProduk').value = data.nama || '';
+            document.getElementById('modalBahan').value = data.modal || '';
+            document.getElementById('jumlahPorsi').value = data.porsi || '';
+            document.getElementById('persenUntung').value = data.untung || '';
+        }
+    };
+</script>
+
+</body>
+</html>
